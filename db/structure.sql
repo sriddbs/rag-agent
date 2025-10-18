@@ -41,13 +41,49 @@ CREATE TABLE public.ar_internal_metadata (
 
 
 --
+-- Name: integrations_data; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.integrations_data (
+    id bigint NOT NULL,
+    user_id bigint NOT NULL,
+    integration_type character varying,
+    external_id character varying,
+    data jsonb,
+    synced_at timestamp(6) without time zone,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: integrations_data_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.integrations_data_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: integrations_data_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.integrations_data_id_seq OWNED BY public.integrations_data.id;
+
+
+--
 -- Name: knowledge_entries; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE public.knowledge_entries (
     id bigint NOT NULL,
     user_id bigint NOT NULL,
-    source character varying,
+    source_type character varying,
+    source_id character varying,
     content text,
     metadata jsonb,
     created_at timestamp(6) without time zone NOT NULL,
@@ -154,6 +190,13 @@ ALTER SEQUENCE public.users_id_seq OWNED BY public.users.id;
 
 
 --
+-- Name: integrations_data id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.integrations_data ALTER COLUMN id SET DEFAULT nextval('public.integrations_data_id_seq'::regclass);
+
+
+--
 -- Name: knowledge_entries id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -180,6 +223,14 @@ ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_
 
 ALTER TABLE ONLY public.ar_internal_metadata
     ADD CONSTRAINT ar_internal_metadata_pkey PRIMARY KEY (key);
+
+
+--
+-- Name: integrations_data integrations_data_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.integrations_data
+    ADD CONSTRAINT integrations_data_pkey PRIMARY KEY (id);
 
 
 --
@@ -212,6 +263,13 @@ ALTER TABLE ONLY public.schema_migrations
 
 ALTER TABLE ONLY public.users
     ADD CONSTRAINT users_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: index_integrations_data_on_user_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_integrations_data_on_user_id ON public.integrations_data USING btree (user_id);
 
 
 --
@@ -259,12 +317,22 @@ ALTER TABLE ONLY public.oauth_credentials
 
 
 --
+-- Name: integrations_data fk_rails_f0a50e93b1; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.integrations_data
+    ADD CONSTRAINT fk_rails_f0a50e93b1 FOREIGN KEY (user_id) REFERENCES public.users(id);
+
+
+--
 -- PostgreSQL database dump complete
 --
 
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20251018112500'),
+('20251018082401'),
 ('20251018073850'),
 ('20251018070227'),
 ('20251018063959'),

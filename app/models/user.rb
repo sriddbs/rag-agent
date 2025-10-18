@@ -3,6 +3,8 @@ class User < ApplicationRecord
   validates :name, presence: true
 
   has_many :oauth_credentials
+  has_many :integrations_data, dependent: :destroy
+  has_many :knowledge_entries, dependent: :destroy
 
   def self.from_omniauth(access_token)
     user = User.find_or_create_by(email: access_token.info.email) do |u|

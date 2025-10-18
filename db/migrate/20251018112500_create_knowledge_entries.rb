@@ -4,7 +4,8 @@ class CreateKnowledgeEntries < ActiveRecord::Migration[8.0]
 
     create_table :knowledge_entries do |t|
       t.references :user, null: false, foreign_key: true
-      t.string :source
+      t.string :source_type # email, hubspot_contact, hubspot_note
+      t.string :source_id
       t.text :content
       t.jsonb :metadata
       t.timestamps
