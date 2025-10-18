@@ -41,6 +41,38 @@ CREATE TABLE public.ar_internal_metadata (
 
 
 --
+-- Name: conversations; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.conversations (
+    id bigint NOT NULL,
+    user_id bigint NOT NULL,
+    title character varying,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: conversations_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.conversations_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: conversations_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.conversations_id_seq OWNED BY public.conversations.id;
+
+
+--
 -- Name: integrations_data; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -109,6 +141,40 @@ CREATE SEQUENCE public.knowledge_entries_id_seq
 --
 
 ALTER SEQUENCE public.knowledge_entries_id_seq OWNED BY public.knowledge_entries.id;
+
+
+--
+-- Name: messages; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.messages (
+    id bigint NOT NULL,
+    conversation_id bigint NOT NULL,
+    role character varying,
+    content text,
+    metadata jsonb,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: messages_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.messages_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: messages_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.messages_id_seq OWNED BY public.messages.id;
 
 
 --
@@ -190,6 +256,13 @@ ALTER SEQUENCE public.users_id_seq OWNED BY public.users.id;
 
 
 --
+-- Name: conversations id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.conversations ALTER COLUMN id SET DEFAULT nextval('public.conversations_id_seq'::regclass);
+
+
+--
 -- Name: integrations_data id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -201,6 +274,13 @@ ALTER TABLE ONLY public.integrations_data ALTER COLUMN id SET DEFAULT nextval('p
 --
 
 ALTER TABLE ONLY public.knowledge_entries ALTER COLUMN id SET DEFAULT nextval('public.knowledge_entries_id_seq'::regclass);
+
+
+--
+-- Name: messages id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.messages ALTER COLUMN id SET DEFAULT nextval('public.messages_id_seq'::regclass);
 
 
 --
@@ -226,6 +306,14 @@ ALTER TABLE ONLY public.ar_internal_metadata
 
 
 --
+-- Name: conversations conversations_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.conversations
+    ADD CONSTRAINT conversations_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: integrations_data integrations_data_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -239,6 +327,14 @@ ALTER TABLE ONLY public.integrations_data
 
 ALTER TABLE ONLY public.knowledge_entries
     ADD CONSTRAINT knowledge_entries_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: messages messages_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.messages
+    ADD CONSTRAINT messages_pkey PRIMARY KEY (id);
 
 
 --
@@ -266,6 +362,13 @@ ALTER TABLE ONLY public.users
 
 
 --
+-- Name: index_conversations_on_user_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_conversations_on_user_id ON public.conversations USING btree (user_id);
+
+
+--
 -- Name: index_integrations_data_on_user_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -284,6 +387,13 @@ CREATE INDEX index_knowledge_entries_on_embedding ON public.knowledge_entries US
 --
 
 CREATE INDEX index_knowledge_entries_on_user_id ON public.knowledge_entries USING btree (user_id);
+
+
+--
+-- Name: index_messages_on_conversation_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_messages_on_conversation_id ON public.messages USING btree (conversation_id);
 
 
 --
@@ -317,6 +427,22 @@ ALTER TABLE ONLY public.oauth_credentials
 
 
 --
+-- Name: conversations fk_rails_7c15d62a0a; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.conversations
+    ADD CONSTRAINT fk_rails_7c15d62a0a FOREIGN KEY (user_id) REFERENCES public.users(id);
+
+
+--
+-- Name: messages fk_rails_7f927086d2; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.messages
+    ADD CONSTRAINT fk_rails_7f927086d2 FOREIGN KEY (conversation_id) REFERENCES public.conversations(id);
+
+
+--
 -- Name: integrations_data fk_rails_f0a50e93b1; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -331,6 +457,8 @@ ALTER TABLE ONLY public.integrations_data
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20251018175150'),
+('20251018174859'),
 ('20251018112500'),
 ('20251018082401'),
 ('20251018073850'),
