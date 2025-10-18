@@ -38,7 +38,13 @@ gem "thruster", require: false
 # OAuth
 gem "omniauth-google-oauth2"
 
+# AI & Vector Search
+gem "ruby-openai"
 gem "pgvector", github: "pgvector/pgvector-ruby"
+
+# API Integrations
+gem "google-apis-gmail_v1"
+gem "google-apis-calendar_v3"
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
