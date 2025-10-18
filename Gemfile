@@ -40,7 +40,8 @@ gem "omniauth-google-oauth2"
 
 # AI & Vector Search
 gem "ruby-openai"
-gem "pgvector", github: "pgvector/pgvector-ruby"
+gem "pgvector"
+gem "neighbor"
 
 # API Integrations
 gem "google-apis-gmail_v1"

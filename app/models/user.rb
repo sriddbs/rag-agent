@@ -22,4 +22,24 @@ class User < ApplicationRecord
 
     user
   end
+
+  def google_client
+    @google_client ||= GoogleApiClient.new(self)
+  end
+
+  def google_access_token
+    google_oauth2_provider.access_token
+  end
+
+  def google_refresh_token
+    google_oauth2_provider.refresh_token
+  end
+
+  def google_token_expires_at
+    google_oauth2_provider.expires_at
+  end
+
+  def google_oauth2_provider
+    @google_oauth2_provider ||= oauth_credentials.find_by(provider: "google_oauth2")
+  end
 end

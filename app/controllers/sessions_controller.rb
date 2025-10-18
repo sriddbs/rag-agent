@@ -5,6 +5,10 @@ class SessionsController < ApplicationController
   def callback
     user = User.from_omniauth(request.env["omniauth.auth"])
     session[:user_id] = user.id
+
+    # Start initial sync
+    SyncIntegrationsJob.perform_later(user.id)
+
     redirect_to root_path, notice: "Welcome, #{user.name || user.email}!"
   end
 
