@@ -4,6 +4,15 @@
   <% user = User.find(session[:user_id]) %>
   <p>Signed in as <strong><%= user.email %></strong></p>
   <%= link_to 'Logout', '/logout' %>
+
+  <% if user.hubspot_access_token.present? %>
+    <p>HubSpot connected</p>
+    <%= link_to 'Sync HubSpot Data', hubspot_sync_data_path, method: :post %>
+    <%= link_to 'Disconnect HubSpot', hubspot_disconnect_path, method: :delete, data: { confirm: 'Are you sure?' } %>
+  <% else %>
+    <%= link_to 'Connect HubSpot', hubspot_connect_path %>
+  <% end %>
+
 <% else %>
   <%= link_to 'Login with Google', '/auth/google_oauth2', class: 'google-login-button' %>
 <% end %>

@@ -15,4 +15,11 @@ Rails.application.routes.draw do
 
   get "/auth/:provider/callback", to: "sessions#callback"
   get "/logout", to: "sessions#destroy"
+
+  # HubSpot OAuth & sync
+  get '/hubspot/connect', to: 'hubspot#hubspot_auth', as: :hubspot_connect
+  get '/hubspot/callback', to: 'hubspot#hubspot_callback', as: :hubspot_callback_integrations
+
+  post '/hubspot/sync', to: 'hubspot#sync_data', as: :hubspot_sync_data
+  delete '/hubspot/disconnect', to: 'hubspot#disconnect_hubspot', as: :hubspot_disconnect
 end

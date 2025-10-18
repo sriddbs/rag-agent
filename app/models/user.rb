@@ -23,6 +23,17 @@ class User < ApplicationRecord
     user
   end
 
+  def self.from_hubspot(user, token_response, portal_id)
+    cred = user.oauth_credentials.find_or_initialize_by(provider: "hubspot")
+
+    cred.update!(
+      access_token: token_response['access_token'],
+      refresh_token: token_response['refresh_token'],
+      expires_at: Time.now + token_response['expires_in'].seconds,
+      provider_uid: portal_id
+    )
+  end
+
   def google_client
     @google_client ||= GoogleApiClient.new(self)
   end
@@ -41,5 +52,25 @@ class User < ApplicationRecord
 
   def google_oauth2_provider
     @google_oauth2_provider ||= oauth_credentials.find_by(provider: "google_oauth2")
+  end
+
+  def hubspot_client
+    @hubspot_client ||= HubspotApiClient.new(self)
+  end
+
+  def hubspot_access_token
+    hubspot_provider&.access_token
+  end
+
+  def hubspot_refresh_token
+    hubspot_provider.refresh_token
+  end
+
+  def hubspot_token_expires_at
+    hubspot_provider.expires_at
+  end
+
+  def hubspot_provider
+    @hubspot_provider ||= oauth_credentials.find_by(provider: "hubspot")
   end
 end
