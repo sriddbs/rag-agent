@@ -1,0 +1,9 @@
+<h1>AI Agent Login</h1>
+
+<% if session[:user_id] %>
+  <% user = User.find(session[:user_id]) %>
+  <p>Signed in as <strong><%= user.email %></strong></p>
+  <%= link_to 'Logout', '/logout' %>
+<% else %>
+  <%= link_to 'Login with Google', '/auth/google_oauth2', class: 'google-login-button' %>
+<% end %>

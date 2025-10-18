@@ -9,5 +9,10 @@ Rails.application.routes.draw do
   # root "posts#index"
 
   # routes.rb
-  post "oauth/:provider/callback" => "oauth#callback"
+  post "auth/:provider/callback" => "sessions#callback"
+
+  root "sessions#new"
+
+  get "/auth/:provider/callback", to: "sessions#callback"
+  get "/logout", to: "sessions#destroy"
 end

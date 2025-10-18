@@ -17,5 +17,7 @@ class User < ApplicationRecord
       expires_at: Time.at(access_token.credentials.expires_at),
       raw: access_token.to_hash
     )
+
+    user
   end
 end
