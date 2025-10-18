@@ -1,3 +1,9 @@
+GIT
+  remote: https://github.com/pgvector/pgvector-ruby.git
+  revision: 9dbae84a17f4d159cbfd55bfee9e2dfb9d46970f
+  specs:
+    pgvector (0.3.2)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -375,6 +381,7 @@ DEPENDENCIES
   kamal
   omniauth-google-oauth2
   pg (~> 1.1)
+  pgvector!
   puma (>= 5.0)
   rails (~> 8.0.3)
   rspec-rails
