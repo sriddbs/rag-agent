@@ -12,6 +12,11 @@ class ChatController < ApplicationController
 
     conversation.add_message('user', user_message)
 
+    # Process with AI agent
+    response = AiAgentService.new(current_user, conversation).process(user_message)
+
+    conversation.add_message('assistant', response[:content], response[:metadata])
+
     render json: {
       content: response[:content],
       metadata: response[:metadata]
