@@ -257,6 +257,43 @@ CREATE TABLE public.schema_migrations (
 
 
 --
+-- Name: tasks; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.tasks (
+    id bigint NOT NULL,
+    user_id bigint NOT NULL,
+    conversation_id bigint,
+    status character varying,
+    description text,
+    context jsonb,
+    steps_completed jsonb,
+    completed_at timestamp(6) without time zone,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: tasks_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.tasks_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: tasks_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.tasks_id_seq OWNED BY public.tasks.id;
+
+
+--
 -- Name: users; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -331,6 +368,13 @@ ALTER TABLE ONLY public.ongoing_instructions ALTER COLUMN id SET DEFAULT nextval
 
 
 --
+-- Name: tasks id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.tasks ALTER COLUMN id SET DEFAULT nextval('public.tasks_id_seq'::regclass);
+
+
+--
 -- Name: users id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -402,6 +446,14 @@ ALTER TABLE ONLY public.schema_migrations
 
 
 --
+-- Name: tasks tasks_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.tasks
+    ADD CONSTRAINT tasks_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -459,10 +511,32 @@ CREATE INDEX index_ongoing_instructions_on_user_id ON public.ongoing_instruction
 
 
 --
+-- Name: index_tasks_on_conversation_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_tasks_on_conversation_id ON public.tasks USING btree (conversation_id);
+
+
+--
+-- Name: index_tasks_on_user_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_tasks_on_user_id ON public.tasks USING btree (user_id);
+
+
+--
 -- Name: index_users_on_email; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE UNIQUE INDEX index_users_on_email ON public.users USING btree (email);
+
+
+--
+-- Name: tasks fk_rails_1439344ea6; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.tasks
+    ADD CONSTRAINT fk_rails_1439344ea6 FOREIGN KEY (conversation_id) REFERENCES public.conversations(id);
 
 
 --
@@ -471,6 +545,14 @@ CREATE UNIQUE INDEX index_users_on_email ON public.users USING btree (email);
 
 ALTER TABLE ONLY public.knowledge_entries
     ADD CONSTRAINT fk_rails_1fba01f8d4 FOREIGN KEY (user_id) REFERENCES public.users(id);
+
+
+--
+-- Name: tasks fk_rails_4d2a9e4d7e; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.tasks
+    ADD CONSTRAINT fk_rails_4d2a9e4d7e FOREIGN KEY (user_id) REFERENCES public.users(id);
 
 
 --
@@ -520,6 +602,7 @@ ALTER TABLE ONLY public.ongoing_instructions
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20251019084616'),
 ('20251018184729'),
 ('20251018175150'),
 ('20251018174859'),
