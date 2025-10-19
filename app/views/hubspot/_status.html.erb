@@ -1,0 +1,23 @@
+<div class="flex items-center justify-between border border-gray-200 rounded-lg px-4 py-3 bg-white shadow-sm">
+  <% if user.hubspot_access_token.present? %>
+    <div class="flex items-center space-x-2">
+      <span class="inline-block w-2 h-2 bg-green-500 rounded-full"></span>
+      <p class="text-sm text-gray-700">HubSpot Connected</p>
+    </div>
+
+    <%= link_to "Disconnect",
+                hubspot_disconnect_path,
+                method: :delete,
+                data: { confirm: "Are you sure you want to disconnect HubSpot?" },
+                class: "text-xs text-gray-500 hover:text-gray-700 px-3 py-1 border border-gray-300 rounded-lg bg-gray-50 hover:bg-gray-100" %>
+  <% else %>
+    <div class="flex items-center space-x-2">
+      <span class="inline-block w-2 h-2 bg-gray-300 rounded-full"></span>
+      <p class="text-sm text-gray-700">HubSpot Not Connected</p>
+    </div>
+
+    <%= link_to "Connect HubSpot",
+                hubspot_connect_path,
+                class: "text-xs text-white bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded-lg" %>
+  <% end %>
+</div>

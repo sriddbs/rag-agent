@@ -1,0 +1,18 @@
+<header class="w-full bg-white border-b border-gray-200 shadow-sm">
+  <div class="max-w-6xl mx-auto flex items-center justify-between px-6 py-3">
+    <div class="flex items-center space-x-4">
+      <h1 class="text-lg font-semibold text-gray-800">AI Financial Advisor</h1>
+      <%= render "hubspot/status", user: current_user if defined?(current_user) && current_user %>
+    </div>
+
+    <div class="flex items-center space-x-3">
+      <% if current_user %>
+        <%= link_to "Logout",
+                    logout_path,
+                    method: :delete,
+                    data: { turbo: false },
+                    class: "text-sm text-gray-600 hover:text-gray-900 border border-gray-300 rounded-lg px-3 py-1.5 bg-white hover:bg-gray-50 transition" %>
+      <% end %>
+    </div>
+  </div>
+</header>
