@@ -1,18 +1,60 @@
-<header class="w-full bg-white border-b border-gray-200 shadow-sm">
-  <div class="max-w-6xl mx-auto flex items-center justify-between px-6 py-3">
-    <div class="flex items-center space-x-4">
-      <h1 class="text-lg font-semibold text-gray-800">AI Financial Advisor</h1>
-      <%= render "hubspot/status", user: current_user if defined?(current_user) && current_user %>
+<header class="bg-white border-b border-gray-200" data-controller="header">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between h-16 items-center">
+      <!-- Left: Logo or title -->
+      <div class="flex items-center space-x-2">
+        <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+        </svg>
+        <span class="text-lg font-semibold text-gray-800">AI Financial Advisor</span>
+      </div>
+
+      <!-- Center: HubSpot status (hidden on very small screens) -->
+      <div class="hidden sm:flex items-center space-x-2 text-sm">
+        <% if current_user&.hubspot_access_token.present? %>
+          <span class="flex items-center text-green-600 font-medium">
+            <svg class="w-3.5 h-3.5 mr-1" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm-1-4l5-5-1.5-1.5L9 11.17l-1.5-1.5L6 11l3 3z" clip-rule="evenodd"/>
+            </svg>
+            HubSpot Connected
+          </span>
+        <% else %>
+          <%= link_to "Connect HubSpot", hubspot_connect_path,
+              class: "text-gray-600 hover:text-blue-600 underline underline-offset-2" %>
+        <% end %>
+      </div>
+
+      <!-- Right: Logout + Mobile Menu -->
+      <div class="flex items-center">
+        <div class="hidden sm:block">
+          <%= link_to "Logout", logout_path,
+              class: "text-sm font-medium text-gray-700 hover:text-red-600" %>
+        </div>
+
+        <!-- Mobile dropdown -->
+        <div class="sm:hidden">
+          <button data-action="click->header#toggle" class="p-2 rounded-md text-gray-600 hover:bg-gray-100 focus:outline-none">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+        </div>
+      </div>
     </div>
 
-    <div class="flex items-center space-x-3">
-      <% if current_user %>
-        <%= link_to "Logout",
-                    logout_path,
-                    method: :delete,
-                    data: { turbo: false },
-                    class: "text-sm text-gray-600 hover:text-gray-900 border border-gray-300 rounded-lg px-3 py-1.5 bg-white hover:bg-gray-50 transition" %>
-      <% end %>
+    <!-- Mobile dropdown menu -->
+    <div data-header-target="menu" class="hidden sm:hidden border-t border-gray-100">
+      <div class="pt-2 pb-3 space-y-1">
+        <% if current_user&.hubspot_access_token.present? %>
+          <p class="px-4 py-2 text-sm text-green-600">HubSpot Connected</p>
+        <% else %>
+          <%= link_to "Connect HubSpot", hubspot_connect_path,
+              class: "block px-4 py-2 text-sm text-gray-600 hover:bg-gray-50" %>
+        <% end %>
+        <%= link_to "Logout", logout_path,
+            class: "block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50" %>
+      </div>
     </div>
   </div>
 </header>
