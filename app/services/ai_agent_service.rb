@@ -23,7 +23,7 @@ class AiAgentService
   def initialize(user, conversation = nil)
     @user = user
     @conversation = conversation || @user.main_conversation
-    @client = OpenAI::Client.new(access_token: ENV['OPENAI_API_KEY'])
+    @client = OpenAI::Client.new(access_token: "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")
   end
 
   def process(user_input)
@@ -57,7 +57,7 @@ class AiAgentService
 
       response = @client.chat(
         parameters: {
-          model: 'gpt-4-turbo-preview',
+          model: 'gpt-4o-mini',
           messages: messages,
           tools: ToolRegistry.all_tools,
           tool_choice: 'auto',
@@ -275,9 +275,9 @@ class AiAgentService
   def format_tool_results(results)
     results.map do |r|
       if r[:result][:success]
-        r[:result][:message] || "✓ #{r[:function_name]} completed"
+        r[:result][:message] || "#{r[:function_name]} completed"
       else
-        "✗ #{r[:function_name]} failed: #{r[:result][:error]}"
+        "#{r[:function_name]} failed: #{r[:result][:error]}"
       end
     end.join("\n")
   end
