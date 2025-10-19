@@ -67,3 +67,6 @@ end
 # UI
 gem "sprockets-rails", "~> 3.5"
 gem "tailwindcss-rails"
+gem "importmap-rails"
+gem "turbo-rails"
+gem "stimulus-rails"
