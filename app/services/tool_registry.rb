@@ -14,7 +14,7 @@ class ToolRegistry
   }.freeze
 
   def self.all_tools
-    ToolDefinitions::ALL_TOOLS
+    ToolSchemas::ALL_TOOLS
   end
 
   def self.execute(user, function_name, arguments)

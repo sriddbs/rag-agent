@@ -38,6 +38,10 @@ class User < ApplicationRecord
     )
   end
 
+  def current_conversation
+    conversations.order(created_at: :desc).first || conversations.create(title: "New Chat")
+  end
+
   def google_client
     @google_client ||= GoogleApiClient.new(self)
   end
