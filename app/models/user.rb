@@ -7,6 +7,8 @@ class User < ApplicationRecord
   has_many :knowledge_entries, dependent: :destroy
   has_many :conversations, dependent: :destroy
   has_many :messages, through: :conversations
+  has_many :ongoing_instructions, dependent: :destroy
+  has_many :tasks, dependent: :destroy
 
   def self.from_omniauth(access_token)
     user = User.find_or_create_by(email: access_token.info.email) do |u|
