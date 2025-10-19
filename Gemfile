@@ -63,3 +63,7 @@ group :development, :test do
 
   gem "factory_bot_rails"
 end
+
+# UI
+gem "sprockets-rails", "~> 3.5"
+gem "tailwindcss-rails"
