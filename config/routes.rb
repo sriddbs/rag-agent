@@ -24,4 +24,11 @@ Rails.application.routes.draw do
 
   post '/hubspot/sync', to: 'hubspot#sync_data', as: :hubspot_sync_data
   delete '/hubspot/disconnect', to: 'hubspot#disconnect_hubspot', as: :hubspot_disconnect
+
+  resources :chat, only: [:index] do
+    collection do
+      post :message
+      get :history
+    end
+  end
 end
