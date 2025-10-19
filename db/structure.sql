@@ -215,6 +215,39 @@ ALTER SEQUENCE public.oauth_credentials_id_seq OWNED BY public.oauth_credentials
 
 
 --
+-- Name: ongoing_instructions; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.ongoing_instructions (
+    id bigint NOT NULL,
+    user_id bigint NOT NULL,
+    instruction text,
+    active boolean DEFAULT true,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: ongoing_instructions_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.ongoing_instructions_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: ongoing_instructions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.ongoing_instructions_id_seq OWNED BY public.ongoing_instructions.id;
+
+
+--
 -- Name: schema_migrations; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -291,6 +324,13 @@ ALTER TABLE ONLY public.oauth_credentials ALTER COLUMN id SET DEFAULT nextval('p
 
 
 --
+-- Name: ongoing_instructions id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.ongoing_instructions ALTER COLUMN id SET DEFAULT nextval('public.ongoing_instructions_id_seq'::regclass);
+
+
+--
 -- Name: users id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -343,6 +383,14 @@ ALTER TABLE ONLY public.messages
 
 ALTER TABLE ONLY public.oauth_credentials
     ADD CONSTRAINT oauth_credentials_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: ongoing_instructions ongoing_instructions_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.ongoing_instructions
+    ADD CONSTRAINT ongoing_instructions_pkey PRIMARY KEY (id);
 
 
 --
@@ -404,6 +452,13 @@ CREATE INDEX index_oauth_credentials_on_user_id ON public.oauth_credentials USIN
 
 
 --
+-- Name: index_ongoing_instructions_on_user_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_ongoing_instructions_on_user_id ON public.ongoing_instructions USING btree (user_id);
+
+
+--
 -- Name: index_users_on_email; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -451,12 +506,21 @@ ALTER TABLE ONLY public.integrations_data
 
 
 --
+-- Name: ongoing_instructions fk_rails_f29704ebc5; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.ongoing_instructions
+    ADD CONSTRAINT fk_rails_f29704ebc5 FOREIGN KEY (user_id) REFERENCES public.users(id);
+
+
+--
 -- PostgreSQL database dump complete
 --
 
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20251018184729'),
 ('20251018175150'),
 ('20251018174859'),
 ('20251018112500'),
