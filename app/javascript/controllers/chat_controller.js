@@ -61,7 +61,7 @@ export default class extends Controller {
         } else if (response.status >= 500) {
           this.addMessage(
             "assistant",
-            "Server hiccup — it’s not you, it’s us. Try again shortly."
+            "Server hiccup — it's not you, it's us. Try again shortly."
           )
         } else {
           this.addMessage(
