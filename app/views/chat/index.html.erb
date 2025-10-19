@@ -1,0 +1,93 @@
+<div class="min-h-screen flex flex-col items-center justify-center bg-gray-50" data-controller="chat">
+  <div class="w-full max-w-2xl bg-white rounded-xl shadow-lg flex flex-col h-[75vh]">
+
+    <!-- Header Tabs -->
+    <header class="flex items-center justify-between border-b border-gray-200 px-4 py-2">
+      <div class="flex space-x-6">
+        <button class="font-semibold text-gray-900 border-b-2 border-blue-600 pb-1">Chat</button>
+        <button class="text-gray-500 hover:text-gray-700">History</button>
+        <button class="text-gray-500 hover:text-gray-700">+ New thread</button>
+      </div>
+      <button class="text-gray-400 hover:text-gray-600 text-xl">&times;</button>
+    </header>
+
+    <!-- Context Info -->
+    <div class="text-center text-sm text-gray-500 border-b border-gray-100 py-2">
+      Context set to all meetings<br>
+      <span class="text-xs text-gray-400"><%= Time.current.strftime("%I:%M %p – %B %d, %Y") %></span>
+    </div>
+
+    <!-- Messages Section -->
+    <main class="flex-1 overflow-y-auto px-4 py-3 space-y-4">
+      <!-- Real messages live here -->
+      <div data-chat-target="messages" class="space-y-4">
+        <% if @messages.any? %>
+          <% @messages.each do |message| %>
+            <%= render partial: "chat/message", locals: { message: message } %>
+          <% end %>
+        <% else %>
+          <div class="flex flex-col items-center justify-center h-full text-gray-400">
+            <p class="text-sm">I can answer questions about your meetings or clients.</p>
+            <p class="text-xs mt-1">Try something like “Find meetings I’ve had with Bill this month.”</p>
+          </div>
+        <% end %>
+      </div>
+
+      <!-- Loader lives *outside* messages -->
+      <div class="hidden flex justify-start mt-4" data-chat-target="loading">
+        <div class="bg-gray-100 rounded-2xl px-4 py-3 shadow-sm">
+          <div class="flex space-x-2">
+            <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+            <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
+            <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+
+    <!-- Input Section -->
+    <footer class="border-t border-gray-200 bg-white p-3">
+      <div class="max-w-3xl mx-auto">
+        <form data-action="submit->chat#send" data-chat-target="form" class="flex space-x-3 items-center">
+          <input
+            type="text"
+            data-chat-target="input"
+            placeholder="Ask anything about your meetings..."
+            class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            autocomplete="off"
+            aria-label="Message input"
+          />
+          <button
+            type="submit"
+            class="px-4 py-2 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+          >
+            Send
+          </button>
+        </form>
+        <div class="mt-2 text-[11px] text-gray-500 text-center">
+          Try: “Who mentioned their kid plays baseball?”
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <template id="tpl-message-user">
+    <div class="flex justify-end">
+      <div class="bg-blue-600 text-white rounded-2xl px-4 py-3 max-w-2xl shadow-sm">
+        <div class="text-sm whitespace-pre-wrap message-content"></div>
+        <div class="text-xs opacity-70 mt-2 message-time"></div>
+      </div>
+    </div>
+  </template>
+
+  <template id="tpl-message-assistant">
+    <div class="flex justify-start">
+      <div class="bg-white text-gray-900 border border-gray-200 rounded-2xl px-4 py-3 max-w-2xl shadow-sm">
+        <div class="text-sm whitespace-pre-wrap message-content"></div>
+        <div class="text-xs opacity-70 mt-2 message-time"></div>
+      </div>
+    </div>
+  </template>
+
+</div>
