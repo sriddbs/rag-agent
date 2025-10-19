@@ -7,9 +7,9 @@ module ToolExecutors
     def execute(args)
       calendar = @user.google_client.calendar_service
 
-      start_date = args['start_date'] || Time.now.iso8601
-      end_date = args['end_date'] || (Time.now + 7.days).iso8601
-      duration = args['duration_minutes'] || 30
+      start_date = normalize_google_time(args["start_date"], default: Time.now)
+      end_date = normalize_google_time(args["end_date"], default: Time.now + 7.days)
+      duration = args["duration_minutes"].to_i.positive? ? args["duration_minutes"].to_i : 30
 
       # Get existing events
       events = calendar.list_events(
@@ -92,6 +92,12 @@ module ToolExecutors
         # Check for overlap
         slot_start < event_end && slot_end > event_start
       end
+    end
+
+    def normalize_google_time(value, default:)
+      # Try to interpret whatever the AI sent — "2025", "2025-10-19", etc.
+      parsed = Time.parse(value.to_s) rescue default
+      parsed.utc.iso8601
     end
   end
 end
