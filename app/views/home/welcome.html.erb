@@ -1,0 +1,23 @@
+<div class="min-h-screen flex flex-col items-center justify-center bg-gray-50 px-4">
+  <div class="max-w-lg w-full bg-white shadow-lg rounded-xl p-8 text-center">
+    <h1 class="text-3xl font-semibold text-gray-900 mb-4">
+      Welcome back, <%= @user.name.presence || @user.email %> 👋
+    </h1>
+
+    <p class="text-gray-600 mb-6">
+      You are connected to your AI Financial Assistant.
+    </p>
+
+    <div class="mt-8">
+      <%= link_to "Open Chat",
+                  chat_index_path,
+                  class: "inline-block bg-blue-600 text-white px-6 py-3 rounded-lg text-base font-medium hover:bg-blue-700 transition" %>
+    </div>
+
+    <div class="mt-6">
+      <%= link_to "Logout",
+                  logout_path,
+                  class: "text-sm text-gray-400 hover:text-gray-600" %>
+    </div>
+  </div>
+</div>

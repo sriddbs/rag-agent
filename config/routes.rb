@@ -13,6 +13,8 @@ Rails.application.routes.draw do
 
   root "sessions#new"
 
+  get "/home", to: "home#welcome"
+
   get "/auth/:provider/callback", to: "sessions#callback"
   get "/logout", to: "sessions#destroy"
 

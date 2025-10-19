@@ -1,5 +1,6 @@
 class SessionsController < ApplicationController
   def new
+    redirect_to home_path if current_user
   end
 
   def callback
@@ -9,7 +10,7 @@ class SessionsController < ApplicationController
     # Start initial sync
     SyncIntegrationsJob.perform_later(user.id)
 
-    redirect_to root_path, notice: "Welcome, #{user.name || user.email}!"
+    redirect_to home_path, notice: "Welcome, #{user.name || user.email}!"
   end
 
   def destroy
