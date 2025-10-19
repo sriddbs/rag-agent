@@ -33,7 +33,7 @@ export default class extends Controller {
     this.abortController = new AbortController()
     const signal = this.abortController.signal
 
-    try {
+   try {
       const response = await fetch("/chat/message", {
         method: "POST",
         headers: {
@@ -44,28 +44,46 @@ export default class extends Controller {
         signal
       })
 
-      // network-level non-ok
       if (!response.ok) {
+        // try to extract useful JSON info if possible
         let payload
-        try { payload = await response.json() } catch (e) { payload = { error: response.statusText } }
-        this.addMessage("assistant", `Error: ${payload.error || payload.message || response.statusText}`)
+        try {
+          payload = await response.json()
+        } catch {
+          payload = { error: response.statusText }
+        }
+
+        if (response.status === 429) {
+          this.addMessage(
+            "assistant",
+            "The AI is at capacity right now — please try again in a few seconds."
+          )
+        } else if (response.status >= 500) {
+          this.addMessage(
+            "assistant",
+            "Server hiccup — it’s not you, it’s us. Try again shortly."
+          )
+        } else {
+          this.addMessage(
+            "assistant",
+            `Error: ${payload.error || payload.message || response.statusText}`
+          )
+        }
+
         return
       }
 
+      // normal success case
       const data = await response.json()
-      // remove temporary marker if any (optional)
       if (tempEl && tempEl.parentNode) {
-        // keep the user message but you could update id/data attributes
+        // (optional) handle temporary placeholders here
       }
-
-      // server returned assistant content
       this.addMessage("assistant", data.content || "(no content)")
     } catch (err) {
       if (err.name === "AbortError") {
-        // request was aborted (user sent another) — ignore or show a small note
-        console.log("Request aborted")
+        console.log("Request aborted — user typed again.")
       } else {
-        console.error(err)
+        console.error("Chat request failed:", err)
         this.addMessage("assistant", `Network error: ${err.message}`)
       }
     } finally {
