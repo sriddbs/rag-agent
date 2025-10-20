@@ -45,7 +45,7 @@ class HubspotController < ApplicationController
   private
 
   def hubspot_authorization_url
-    client_id = "33171414-9274-4fb4-9f58-7d5c6627e0bd"
+    client_id = ENV.fetch("HUBSPOT_CLIENT_ID")
     redirect_uri = hubspot_callback_integrations_url
     scopes = %w[
       crm.objects.contacts.read
@@ -69,8 +69,8 @@ class HubspotController < ApplicationController
     response = HTTParty.post('https://api.hubapi.com/oauth/v1/token',
       body: {
         grant_type: 'authorization_code',
-        client_id: "33171414-9274-4fb4-9f58-7d5c6627e0bd",
-        client_secret: "a3566056-adba-41c1-833d-ea95fb188e14",
+        client_id: ENV.fetch("HUBSPOT_CLIENT_ID"),
+        client_secret: ENV.fetch("HUBSPOT_CLIENT_SECRET"),
         redirect_uri: hubspot_callback_integrations_url,
         code: code
       }

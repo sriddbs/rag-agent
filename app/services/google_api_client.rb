@@ -21,8 +21,8 @@ class GoogleApiClient
     return @authorization if @authorization
 
     @authorization = Signet::OAuth2::Client.new(
-      client_id: "756826802737-as4sit73u6dv2qh37kdcameohat59ebt.apps.googleusercontent.com",
-      client_secret: "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",
+      client_id: ENV.fetch("GOOGLE_CLIENT_ID"),
+      client_secret: ENV.fetch("GOOGLE_CLIENT_SECRET"),
       token_credential_uri: 'https://oauth2.googleapis.com/token',
       access_token: @user.google_access_token,
       refresh_token: @user.google_refresh_token,

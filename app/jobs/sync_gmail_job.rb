@@ -122,7 +122,7 @@ class SyncGmailJob < ApplicationJob
   #   # Limit text length for embedding (8k tokens ≈ 32k chars)
   #   truncated_text = text[0..32000]
 
-  #   client = OpenAI::Client.new(access_token: "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")
+  #   client = OpenAI::Client.new(access_token: ENV.fetch("OPENAI_API_KEY"))
   #   response = client.embeddings(
   #     parameters: {
   #       model: 'text-embedding-3-small',

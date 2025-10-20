@@ -23,7 +23,7 @@ class AiAgentService
   def initialize(user, conversation = nil)
     @user = user
     @conversation = conversation || @user.main_conversation
-    @client = OpenAI::Client.new(access_token: "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")
+    @client = OpenAI::Client.new(access_token: ENV.fetch("OPENAI_API_KEY"))
   end
 
   def process(user_input)

@@ -80,8 +80,8 @@ class HubspotApiClient
       'https://api.hubapi.com/oauth/v1/token',
       body: {
         grant_type: 'refresh_token',
-        client_id: "33171414-9274-4fb4-9f58-7d5c6627e0bd",
-        client_secret: "a3566056-adba-41c1-833d-ea95fb188e14",
+        client_id: ENV.fetch("HUBSPOT_CLIENT_ID"),
+        client_secret: ENV.fetch("HUBSPOT_CLIENT_SECRET"),
         refresh_token: @user.hubspot_refresh_token
       }
     )
