@@ -27,12 +27,12 @@ module ToolExecutors
     private
 
     def create_message(to:, subject:, body:)
-      mail = Mail.new do
-        from     @user.email
-        to       to
-        subject  subject
-        body     body
-      end
+      mail = Mail.new(
+        from: @user.email,
+        to: to,
+        subject: subject,
+        body: body
+      )
 
       Google::Apis::GmailV1::Message.new(
         raw: Base64.urlsafe_encode64(mail.to_s)
