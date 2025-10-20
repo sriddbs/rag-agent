@@ -302,7 +302,10 @@ CREATE TABLE public.users (
     email character varying NOT NULL,
     name character varying,
     created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL
+    updated_at timestamp(6) without time zone NOT NULL,
+    last_email_check_at timestamp(6) without time zone,
+    last_calendar_check_at timestamp(6) without time zone,
+    last_hubspot_check_at timestamp(6) without time zone
 );
 
 
@@ -602,6 +605,7 @@ ALTER TABLE ONLY public.ongoing_instructions
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20251020112306'),
 ('20251019084616'),
 ('20251018184729'),
 ('20251018175150'),
