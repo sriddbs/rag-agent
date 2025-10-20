@@ -1,7 +1,7 @@
 Rails.application.config.middleware.use OmniAuth::Builder do
   provider :google_oauth2,
-           "756826802737-as4sit73u6dv2qh37kdcameohat59ebt.apps.googleusercontent.com",
-           "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",
+           ENV.fetch("GOOGLE_CLIENT_ID"),
+           ENV.fetch("GOOGLE_CLIENT_SECRET"),
            {
              scope: "email,profile,https://www.googleapis.com/auth/gmail.modify,https://www.googleapis.com/auth/calendar",
              prompt: "consent",
