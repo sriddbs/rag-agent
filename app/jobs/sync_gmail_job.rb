@@ -102,25 +102,25 @@ class SyncGmailJob < ApplicationJob
   end
 
   def generate_embedding(text)
-  #   return nil if text.blank?
+    return nil if text.blank?
 
-  #   # Limit text length for embedding (8k tokens ≈ 32k chars)
-  #   truncated_text = text[0..32000]
+    # Limit text length for embedding (8k tokens ≈ 32k chars)
+    truncated_text = text[0..32000]
 
-  #   client = OpenAI::Client.new(access_token: ENV.fetch("OPENAI_API_KEY"))
-  #   response = client.embeddings(
-  #     parameters: {
-  #       model: 'text-embedding-3-small',
-  #       input: truncated_text
-  #     }
-  #   )
-  #   response.dig('data', 0, 'embedding')
-  # rescue => e
-  #   Rails.logger.error "Failed to generate embedding: #{e.message}"
-  #   nil
+    client = OpenAI::Client.new(access_token: ENV.fetch("OPENAI_API_KEY"))
+    response = client.embeddings(
+      parameters: {
+        model: 'text-embedding-3-small',
+        input: truncated_text
+      }
+    )
+    response.dig('data', 0, 'embedding')
+  rescue => e
+    Rails.logger.error "Failed to generate embedding: #{e.message}"
+    nil
 
-    # Return a deterministic fake embedding vector (e.g., 1536-dim)
-    rng = Random.new(text.hash)
-    Array.new(1536) { rng.rand }  # random floats between 0.0 and 1.0
+    # Testing: Return a deterministic fake embedding vector (e.g., 1536-dim)
+    # rng = Random.new(text.hash)
+    # Array.new(1536) { rng.rand }  # random floats between 0.0 and 1.0
   end
 end

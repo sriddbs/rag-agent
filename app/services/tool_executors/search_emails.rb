@@ -30,18 +30,18 @@ module ToolExecutors
     private
 
     def generate_embedding(text)
-      # Return a deterministic fake embedding vector (e.g., 1536-dim)
-      rng = Random.new(text.hash)
-      Array.new(1536) { rng.rand }  # random floats between 0.0 and 1.0
+      # Testing: Return a deterministic fake embedding vector (e.g., 1536-dim)
+      # rng = Random.new(text.hash)
+      # Array.new(1536) { rng.rand }  # random floats between 0.0 and 1.0
 
-      # client = OpenAI::Client.new(access_token: ENV['OPENAI_API_KEY'])
-      # response = client.embeddings(
-      #   parameters: {
-      #     model: 'text-embedding-ada-002',
-      #     input: text
-      #   }
-      # )
-      # response.dig('data', 0, 'embedding')
+      client = OpenAI::Client.new(access_token: ENV['OPENAI_API_KEY'])
+      response = client.embeddings(
+        parameters: {
+          model: 'text-embedding-ada-002',
+          input: text
+        }
+      )
+      response.dig('data', 0, 'embedding')
     end
   end
 end
