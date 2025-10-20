@@ -10,6 +10,8 @@ class SyncGmailJob < ApplicationJob
 
     return unless result.messages
 
+    email_processor = EmailProcessorService.new(user)
+
     result.messages.each do |message_ref|
       next if user.integrations_data.exists?(
         integration_type: 'gmail',
@@ -27,25 +29,8 @@ class SyncGmailJob < ApplicationJob
           synced_at: Time.now
         )
 
-        # Create embedding
-        content = extract_email_content(message)
-        next if content.blank?
-
-        embedding = generate_embedding(content)
-
-        user.knowledge_entries.create!(
-          source_type: 'email',
-          source_id: message.id,
-          content:,
-          embedding:,
-          metadata: {
-            subject: get_header(message, 'Subject'),
-            from: get_header(message, 'From'),
-            to: get_header(message, 'To'),
-            date: get_header(message, 'Date'),
-            thread_id: message.thread_id
-          }
-        )
+        # Process and sync to knowledge base using shared service
+        email_processor.process_and_sync(message.id)
       rescue => e
         Rails.logger.error "Failed to process email #{message_ref.id}: #{e.message}"
         next

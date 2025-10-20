@@ -47,6 +47,53 @@ class AiAgentService
 
   private
 
+  # Later can be used with webhooks
+  def handle_webhook_event(event_type, event_data)
+    # Build context for proactive action
+    event_description = format_event_description(event_type, event_data)
+
+    # Find matching instructions
+    matching_instructions = find_matching_instructions(event_description)
+    instructions_text = matching_instructions.map(&:to_instruction_text).join("\n\n")
+
+    messages = [
+      { role: 'system', content: SYSTEM_PROMPT },
+      { role: 'system', content: "RELEVANT RULES FOR THIS EVENT:\n#{instructions_text}" } if matching_instructions.any?,
+      { role: 'system', content: event_description },
+      {
+        role: 'system',
+        content: "Review the event and your rules. Should you take any action? " \
+                 "If yes, use the available tools. If no, respond with exactly 'NO_ACTION'."
+      }
+    ].compact
+
+    response = call_llm_with_tools(messages)
+
+    # Track which instructions triggered
+    if response[:content] != 'NO_ACTION'
+      matching_instructions.each do |instruction|
+        instruction.meta ||= {}
+        instruction.meta['triggers_count'] = (instruction.meta['triggers_count'] || 0) + 1
+        instruction.meta['last_triggered'] = Time.now.iso8601
+        instruction.save
+      end
+    end
+
+    # Only log if AI decided to take action
+    unless response[:content] == 'NO_ACTION'
+      @conversation.add_message('system', "Event: #{event_type}")
+      @conversation.add_message('assistant', response[:content], response[:metadata])
+    end
+
+    response
+  end
+
+  def find_matching_instructions(context_description)
+    @user.ongoing_instructions.active.select do |instruction|
+      instruction.matches_context?(context_description)
+    end
+  end
+
   def call_llm_with_tools(messages, max_iterations: 5)
     iteration = 0
     accumulated_tool_results = []
