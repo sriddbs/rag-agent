@@ -3,7 +3,7 @@ class PollHubspotJob < ApplicationJob
 
   def perform(user_id)
     user = User.find(user_id)
-    return unless user.hubspot_token.present?
+    return unless user.hubspot_access_token.present?
 
     client = user.hubspot_client
 

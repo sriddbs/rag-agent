@@ -59,6 +59,29 @@ class HubspotApiClient
     JSON.parse(response.body)
   end
 
+  def search_recently_modified_contacts(since_timestamp_ms)
+    response = HTTParty.post(
+      "#{@base_url}/crm/v3/objects/contacts/search",
+      headers: headers,
+      body: {
+        filterGroups: [{
+          filters: [{
+            propertyName: 'hs_lastmodifieddate',
+            operator: 'GTE',
+            value: since_timestamp_ms.to_s
+          }]
+        }],
+        properties: %w[email firstname lastname phone company jobtitle lifecyclestage],
+        limit: 100,
+        sorts: [{
+          propertyName: 'hs_lastmodifieddate',
+          direction: 'DESCENDING'
+        }]
+      }.to_json
+    )
+    JSON.parse(response.body)
+  end
+
   private
 
   def headers
